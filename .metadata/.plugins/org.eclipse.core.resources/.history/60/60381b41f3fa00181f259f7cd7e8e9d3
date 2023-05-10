@@ -1,0 +1,101 @@
+import java.awt.Component;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
+
+import net.proteanit.sql.DbUtils;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+
+public class ExecuteSQLQuery extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ExecuteSQLQuery frame = new ExecuteSQLQuery();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	Connection conexiune = null;
+	
+	public ExecuteSQLQuery() {
+		conexiune = Connect.conexiuneBD();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 612, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblPutYourQuery = new JLabel("Select your query");
+		lblPutYourQuery.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblPutYourQuery.setBounds(209, 11, 165, 22);
+		contentPane.add(lblPutYourQuery);
+		
+		JButton btnNewButton = new JButton("Exit");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Component frmLoginCheck = new JFrame("Exit");
+				if(JOptionPane.showConfirmDialog(frmLoginCheck, "Confirm if you want to exit", "Login Check",
+				JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION) {
+				System.exit(0);
+			}
+		}
+		});
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnNewButton.setBounds(458, 163, 112, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Back to menu");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				Interfata object = new Interfata();
+				object.setVisible(true);
+				dispose();
+			}
+		});
+		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnNewButton_1.setBounds(458, 213, 112, 23);
+		contentPane.add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("New button");
+		btnNewButton_2.setBounds(10, 62, 112, 23);
+		contentPane.add(btnNewButton_2);
+		
+		
+	}
+}

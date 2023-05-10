@@ -1,0 +1,118 @@
+import java.awt.Component;
+import java.awt.EventQueue;
+
+import javax.swing.border.EmptyBorder;
+
+import net.proteanit.sql.DbUtils;
+
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.sql.*;
+import javax.swing.*;
+
+
+public class Interfata extends JFrame {
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+	Connection conexiune = null;
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Interfata frame = new Interfata();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+
+	public Interfata() {
+		conexiune = Connect.conexiuneBD();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblSelectatiCeTabel = new JLabel("Selectati ce tabel doriti sa modificati");
+		lblSelectatiCeTabel.setFont(new Font("Times New Roman", Font.BOLD, 15));
+		lblSelectatiCeTabel.setBounds(96, 48, 275, 14);
+		contentPane.add(lblSelectatiCeTabel);
+		
+		textField = new JTextField();
+		textField.setBounds(266, 149, 105, 20);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnReset = new JButton("Reset");
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent arg0) {
+				textField.setText(null);
+			}
+		});
+		btnReset.setBounds(70, 148, 121, 23);
+		contentPane.add(btnReset);
+		
+		JButton btnExit = new JButton("Exit");
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Component frmLoginCheck = new JFrame("Exit");
+				if(JOptionPane.showConfirmDialog(frmLoginCheck, "Confirm if you want to exit", "Login Check",
+				JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION) {
+				System.exit(0);
+				}
+			}
+		});
+		btnExit.setBounds(70, 194, 121, 23);
+		contentPane.add(btnExit);
+
+	
+		JButton btnNewButton = new JButton("Selectare tabel");
+		btnNewButton.setBounds(70, 100, 121, 23);
+		contentPane.add(btnNewButton);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					switch(textField.getText()) {
+					case "ModifActor": ModifActor object1 = new ModifActor();
+									   object1.setVisible(true);
+									   break;
+					case "ModifFilm":  ModifFilm object2 = new ModifFilm();
+									   object2.setVisible(true);
+									   break;
+					case "ModifReview":ModifReview object3 = new ModifReview();
+									   object3.setVisible(true);
+									   break;
+					default: JOptionPane.showMessageDialog(null, "Tabel inexistent");
+					}
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+						
+				}
+		});
+	    }
+}
+
+
+
+

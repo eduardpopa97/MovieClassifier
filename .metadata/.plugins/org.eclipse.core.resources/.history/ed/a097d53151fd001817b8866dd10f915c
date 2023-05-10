@@ -1,0 +1,72 @@
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JTable;
+
+public class Query5 extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField textField;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Query5 frame = new Query5();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Query5() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("<html>Afisati anii in care s-au regizat cel putin un film si care au primit cel putin o nota mai mare sau egala cu o anumita valoare</html>");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setBounds(10, 11, 402, 28);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNotaAcordata = new JLabel("Nota acordata");
+		lblNotaAcordata.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNotaAcordata.setBounds(10, 72, 85, 14);
+		contentPane.add(lblNotaAcordata);
+		
+		textField = new JTextField();
+		textField.setBounds(108, 69, 86, 20);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnSearch = new JButton("Search");
+		btnSearch.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnSearch.setBounds(216, 68, 89, 23);
+		contentPane.add(btnSearch);
+		
+		JButton btnBackToMenu = new JButton("Back to menu");
+		btnBackToMenu.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnBackToMenu.setBounds(315, 68, 109, 23);
+		contentPane.add(btnBackToMenu);
+		
+	}
+
+}

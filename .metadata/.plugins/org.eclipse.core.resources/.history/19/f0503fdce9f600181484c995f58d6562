@@ -1,0 +1,277 @@
+import java.awt.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import net.proteanit.sql.DbUtils;
+
+import javax.swing.JTable;
+import java.sql.*;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class ModifActor extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTable table;
+	private JComboBox comboBoxName;
+
+	public void refreshTable() {
+		try {
+			String query = "SELECT * FROM Actor";
+			PreparedStatement pst = conexiune.prepareStatement(query);
+			ResultSet rs = pst.executeQuery(); 
+			table.setModel(DbUtils.resultSetToTableModel(rs));
+			pst.close();
+			rs.close();
+		    }
+		catch (Exception e) {
+			e.printStackTrace();
+			}
+		
+	}
+	
+	public void fillComboBox() {
+		try {
+			String query = "SELECT * FROM Actor";
+			PreparedStatement pst = conexiune.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			
+			while(rs.next()) {
+				comboBoxName.addItem(rs.getString("actor_nume"));
+			}
+		    }
+		catch (Exception e) {
+			e.printStackTrace();
+			}
+		
+	}
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ModifActor frame = new ModifActor();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	Connection conexiune = null;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTextField textField_3;
+	/**
+	 * Create the frame.
+	 */
+	public ModifActor() {
+		conexiune = Connect.conexiuneBD();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 531, 380);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JButton BtnLoad = new JButton("LoadActor");
+		BtnLoad.setFont(new Font("Tahoma", Font.BOLD, 11));
+		BtnLoad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					String query = "SELECT * FROM Actor";
+					PreparedStatement pst = conexiune.prepareStatement(query);
+					ResultSet rs = pst.executeQuery(); 
+					table.setModel(DbUtils.resultSetToTableModel(rs));
+					pst.close();
+					rs.close();
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		BtnLoad.setBounds(219, 11, 108, 23);
+		contentPane.add(BtnLoad);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(201, 84, 304, 247);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		
+		JLabel lblNewLabel = new JLabel("ActorID");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setBounds(10, 103, 46, 14);
+		contentPane.add(lblNewLabel);
+		
+		textField = new JTextField();
+		textField.setBounds(105, 100, 86, 20);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblActornume = new JLabel("ActorNume");
+		lblActornume.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblActornume.setBounds(10, 136, 70, 14);
+		contentPane.add(lblActornume);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(105, 133, 86, 20);
+		contentPane.add(textField_1);
+		textField_1.setColumns(10);
+		
+		JLabel lblActorprenume = new JLabel("ActorPrenume");
+		lblActorprenume.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblActorprenume.setBounds(9, 172, 86, 14);
+		contentPane.add(lblActorprenume);
+		
+		textField_2 = new JTextField();
+		textField_2.setBounds(105, 169, 86, 20);
+		contentPane.add(textField_2);
+		textField_2.setColumns(10);
+		
+		JLabel lblActorsex = new JLabel("ActorSex");
+		lblActorsex.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblActorsex.setBounds(10, 209, 59, 14);
+		contentPane.add(lblActorsex);
+		
+		textField_3 = new JTextField();
+		textField_3.setBounds(105, 206, 86, 20);
+		contentPane.add(textField_3);
+		textField_3.setColumns(10);
+		
+		JButton btnNewButton = new JButton("Save");
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					String query = "INSERT INTO Actor (actor_id, actor_nume, actor_prenume, actor_sex) VALUES (?,?,?,?)";
+					PreparedStatement pst = conexiune.prepareStatement(query);
+					pst.setString(1,textField.getText());
+					pst.setString(2,textField_1.getText());
+					pst.setString(3,textField_2.getText());
+					pst.setString(4,textField_3.getText());
+					
+					pst.execute(); 
+					
+					JOptionPane.showMessageDialog(null, "Data Saved");
+					pst.close();
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				refreshTable();
+			}
+		});
+		btnNewButton.setBounds(47, 237, 89, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					String query = "UPDATE Actor SET actor_id = '"+textField.getText()+"', actor_nume = '"+textField_1.getText()+"', actor_prenume ='"+textField_2.getText()+"', actor_sex = '"+textField_3.getText()+"' WHERE actor_id = '"+textField.getText()+"' ";
+					PreparedStatement pst = conexiune.prepareStatement(query);
+				
+					pst.execute(); 
+					
+					JOptionPane.showMessageDialog(null, "Data Updated");
+					pst.close();
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				refreshTable();
+			}
+		});
+		
+		btnUpdate.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnUpdate.setBounds(47, 271, 89, 23);
+		contentPane.add(btnUpdate);
+		
+		JButton btnNewButton_1 = new JButton("Delete");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int action = JOptionPane.showConfirmDialog(null, "Do you really want to delete?", "Delete", JOptionPane.YES_NO_OPTION);
+				if(action == 0) {
+				try {
+					String query = "DELETE FROM Actor WHERE actor_id ='"+textField.getText()+"' ";
+					PreparedStatement pst = conexiune.prepareStatement(query);
+				
+					pst.execute(); 
+					
+					JOptionPane.showMessageDialog(null, "Data Deleted");
+					pst.close();
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				refreshTable();
+				}
+			}
+		});
+		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnNewButton_1.setBounds(47, 308, 89, 23);
+		contentPane.add(btnNewButton_1);
+		
+		comboBoxName = new JComboBox();
+		comboBoxName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					String query = "SELECT * FROM Actor WHERE actor_nume = ?";
+					PreparedStatement pst = conexiune.prepareStatement(query);
+					pst.setString(1, (String)comboBoxName.getSelectedItem());
+					ResultSet rs = pst.executeQuery();
+					
+					while(rs.next()) {
+						textField.setText(rs.getString("actor_id"));
+						textField_1.setText(rs.getString("actor_nume"));
+						textField_2.setText(rs.getString("actor_prenume"));
+						textField_3.setText(rs.getString("actor_sex"));
+					}
+					
+					pst.close();
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				refreshTable();		
+			}
+		});
+		comboBoxName.setFont(new Font("Tahoma", Font.BOLD, 18));
+		comboBoxName.setBounds(10, 11, 181, 51);
+		contentPane.add(comboBoxName);
+		
+		JButton btnNewButton_2 = new JButton("Go to Film");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg) {
+				setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				ModifFilm object = new ModifFilm();
+				object.setVisible(true);
+			}
+		});
+		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnNewButton_2.setBounds(219, 50, 108, 23);
+		contentPane.add(btnNewButton_2);
+		
+		refreshTable();
+		fillComboBox();
+	}
+}

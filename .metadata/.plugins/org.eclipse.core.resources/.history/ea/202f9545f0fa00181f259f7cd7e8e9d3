@@ -1,0 +1,155 @@
+import java.awt.Component;
+import java.sql.*;
+import java.awt.EventQueue;
+import javax.swing.*;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+
+import java.awt.event.ActionEvent;
+import java.awt.Font;
+import java.awt.Image;
+
+
+public class LoginCheck extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTextField textField_1;
+	private static LoginCheck frame;
+	private JButton btnReset;
+	JLabel lblNewLabel;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					frame = new LoginCheck();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	Connection conexiune = null;
+
+	/**
+	 * Create the frame.
+	 */
+	
+	public LoginCheck() {
+		conexiune = Connect.conexiuneBD();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 463, 321);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblUsername = new JLabel("Username");
+		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblUsername.setBounds(213, 75, 59, 14);
+		contentPane.add(lblUsername);
+		
+		textField = new JTextField();
+		textField.setBounds(318, 72, 86, 20);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblPassword = new JLabel("Password");
+		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblPassword.setBounds(213, 126, 59, 14);
+		contentPane.add(lblPassword);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(318, 123, 86, 20);
+		contentPane.add(textField_1);
+		textField_1.setColumns(10);
+		
+		JButton btnNewButton = new JButton("Login");
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+                    String query = "SELECT * FROM User_parola WHERE nume=? AND parola=?";
+                    PreparedStatement stm = conexiune.prepareStatement(query);
+                    stm.setString(1, textField.getText());
+                    stm.setString(2, textField_1.getText());
+                    ResultSet rs = stm.executeQuery();
+                    int i = 0;
+                    while(rs.next())
+                    {
+                        i++;
+                    }
+                    if(i>0) {
+                        JOptionPane.showMessageDialog(null, " User si parola corecte.\n Conectat la baza de date.");
+                        frame.dispose();
+                        Interfata object = new Interfata();
+                        object.setVisible(true);
+                    }
+                    else
+                    JOptionPane.showMessageDialog(null, "User si parola incorecte.");
+                    rs.close();
+                    stm.close();
+                }catch(Exception exc) {
+                    JOptionPane.showMessageDialog(null, exc);
+                }
+			}
+		
+		});
+		btnNewButton.setBounds(274, 237, 89, 23);
+		contentPane.add(btnNewButton);
+		
+		btnReset = new JButton("Reset");
+		btnReset.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent arg0) {
+				textField.setText(null);
+				textField_1.setText(null);
+			}
+		});
+		btnReset.setBounds(274, 169, 89, 23);
+		contentPane.add(btnReset);
+		
+		JButton btnExit = new JButton("Exit");
+		btnExit.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Component frmLoginCheck = new JFrame("Exit");
+				if(JOptionPane.showConfirmDialog(frmLoginCheck, "Confirm if you want to exit", "Login Check",
+				JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION) {
+				System.exit(0);
+				}
+			}
+		});
+		btnExit.setBounds(274, 203, 89, 23);
+		contentPane.add(btnExit);
+		
+		JLabel lblLoginSystem = new JLabel("Login System");
+		lblLoginSystem.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblLoginSystem.setBounds(162, 11, 117, 20);
+		contentPane.add(lblLoginSystem);
+		
+		lblNewLabel = new JLabel(" ");
+		Image image = new ImageIcon(this.getClass().getResource("user.png")).getImage();
+		lblNewLabel.setIcon(new ImageIcon(image));
+		lblNewLabel.setBounds(10, 55, 193, 205);
+		contentPane.add(lblNewLabel);
+		
+	}
+}

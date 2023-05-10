@@ -1,0 +1,102 @@
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import net.proteanit.sql.DbUtils;
+
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.awt.event.ActionEvent;
+import javax.swing.JScrollBar;
+
+public class Query1 extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTable table;
+	private JTable table_1;
+	Connection conexiune = null;
+	private JTable table_2;
+	private JTable table_3;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Query1 frame = new Query1();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Query1() {
+		conexiune = Connect.conexiuneBD();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("<html> Afisati filmele care au primit cel putin o anumita nota la review-uri si user-ul care a acordat nota respectiva alaturi de comentariul sau </html>");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setBounds(10, 11, 414, 41);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNotaAcordata = new JLabel("Nota acordata");
+		lblNotaAcordata.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNotaAcordata.setBounds(10, 76, 93, 14);
+		contentPane.add(lblNotaAcordata);
+		
+		textField = new JTextField();
+		textField.setBounds(145, 73, 86, 20);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnSearch = new JButton("Search");
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					String query = "SELECT f.film_titlu, r.user_id, r.comentariu FROM Film f INNER JOIN Review ON f.film_id = r.film_id WHERE r.review_nota = ?";
+					PreparedStatement pst = conexiune.prepareStatement(query);
+					pst.setString(1, textField.getText());
+					ResultSet rs = pst.executeQuery(); 
+					table.setModel(DbUtils.resultSetToTableModel(rs));
+					pst.close();
+					rs.close();
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		btnSearch.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnSearch.setBounds(291, 72, 89, 23);
+		contentPane.add(btnSearch);
+		
+		table = new JTable();
+		table.setBounds(21, 113, 1, 1);
+		contentPane.add(table);
+	}
+}

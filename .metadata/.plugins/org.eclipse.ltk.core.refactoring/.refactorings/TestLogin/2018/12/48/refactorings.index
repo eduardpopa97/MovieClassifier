@@ -1,0 +1,9 @@
+1543655418990	Rename type 'InsertActor'
+1543655460276	Rename type 'InsertFilm'
+1543655477881	Rename type 'InsertReview'
+1543658432946	Convert local variable 'text' to field
+1543660707630	Convert local variable 'table' to field
+1543661784322	Convert local variable 'conexiune' to field
+1543661790366	Convert local variable 'table' to field
+1543661842658	Convert local variable 'table' to field
+1543671889512	Convert local variable 'table' to field

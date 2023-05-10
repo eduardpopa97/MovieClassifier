@@ -1,0 +1,716 @@
+import java.awt.Component;
+import java.awt.EventQueue;
+
+import javax.swing.border.EmptyBorder;
+
+import net.proteanit.sql.DbUtils;
+
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.sql.*;
+import javax.swing.*;
+
+
+public class Interfata extends JFrame {
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+	Connection conexiune = null;
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Interfata frame = new Interfata();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+
+	public Interfata() {
+		conexiune = Connect.conexiuneBD();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblSelectatiCeTabel = new JLabel("Selectati ce tabel doriti sa modificati");
+		lblSelectatiCeTabel.setFont(new Font("Times New Roman", Font.BOLD, 15));
+		lblSelectatiCeTabel.setBounds(96, 48, 275, 14);
+		contentPane.add(lblSelectatiCeTabel);
+		
+		textField = new JTextField();
+		textField.setBounds(266, 149, 105, 20);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnReset = new JButton("Reset");
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent arg0) {
+				textField.setText(null);
+			}
+		});
+		btnReset.setBounds(70, 148, 121, 23);
+		contentPane.add(btnReset);
+		
+		JButton btnExit = new JButton("Exit");
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Component frmLoginCheck = new JFrame("Exit");
+				if(JOptionPane.showConfirmDialog(frmLoginCheck, "Confirm if you want to exit", "Login Check",
+				JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION) {
+				System.exit(0);
+				}
+			}
+		});
+		btnExit.setBounds(70, 194, 121, 23);
+		contentPane.add(btnExit);
+
+	
+		JButton btnNewButton = new JButton("Selectare tabel");
+		btnNewButton.setBounds(70, 100, 121, 23);
+		contentPane.add(btnNewButton);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					switch(textField.getText()) {
+					case "ModifActor": ModifActor(); break;
+					case "ModifFilm":  ModifFilm(); break;
+					case "ModifReview":ModifReview(); break;
+					default: JOptionPane.showMessageDialog(null, "Tabel inexistent");
+					}
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+						
+				}
+		});
+	    }
+
+
+public void ModifFilm() {
+	conexiune = Connect.conexiuneBD();
+	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	setBounds(100, 100, 531, 380);
+	contentPane = new JPanel();
+	contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+	setContentPane(contentPane);
+	contentPane.setLayout(null);
+	
+	JButton BtnLoad = new JButton("LoadFilm");
+	BtnLoad.setFont(new Font("Tahoma", Font.BOLD, 11));
+	BtnLoad.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "SELECT * FROM Film";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				ResultSet rs = pst.executeQuery(); 
+				AbstractButton table = null;
+				table.setModel((ButtonModel) DbUtils.resultSetToTableModel(rs));
+				pst.close();
+				rs.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+	});
+	BtnLoad.setBounds(219, 18, 108, 23);
+	contentPane.add(BtnLoad);
+	
+	JScrollPane scrollPane = new JScrollPane();
+	scrollPane.setBounds(201, 84, 304, 247);
+	contentPane.add(scrollPane);
+	
+	JTable table = new JTable();
+	scrollPane.setViewportView(table);
+	
+	JLabel lblFilmId = new JLabel("FilmID");
+	lblFilmId.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblFilmId.setBounds(10, 11, 46, 14);
+	contentPane.add(lblFilmId);
+	
+	textField = new JTextField();
+	textField.setBounds(105, 8, 86, 20);
+	contentPane.add(textField);
+	textField.setColumns(10);
+	
+	JLabel lblFilmTitlu = new JLabel("FilmTitlu");
+	lblFilmTitlu.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblFilmTitlu.setBounds(10, 42, 70, 14);
+	contentPane.add(lblFilmTitlu);
+	
+	JTextField textField_1 = new JTextField();
+	textField_1.setBounds(105, 39, 86, 20);
+	contentPane.add(textField_1);
+	textField_1.setColumns(10);
+	
+	JLabel lblFilmAn = new JLabel("FilmAn");
+	lblFilmAn.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblFilmAn.setBounds(10, 74, 86, 14);
+	contentPane.add(lblFilmAn);
+	
+	JTextField textField_2 = new JTextField();
+	textField_2.setBounds(105, 71, 86, 20);
+	contentPane.add(textField_2);
+	textField_2.setColumns(10);
+	
+	JLabel lblFilmDurata = new JLabel("FilmDurata");
+	lblFilmDurata.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblFilmDurata.setBounds(10, 109, 70, 14);
+	contentPane.add(lblFilmDurata);
+	
+	JTextField textField_3 = new JTextField();
+	textField_3.setBounds(105, 106, 86, 20);
+	contentPane.add(textField_3);
+	textField_3.setColumns(10);
+	
+	JLabel lblFilmLimba = new JLabel("FilmLimba");
+	lblFilmLimba.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblFilmLimba.setBounds(10, 144, 70, 14);
+	contentPane.add(lblFilmLimba);
+	
+	JTextField textField_4 = new JTextField();
+	textField_4.setBounds(105, 141, 86, 20);
+	contentPane.add(textField_4);
+	textField_4.setColumns(10);
+	
+	JLabel lblFilmTara = new JLabel("FilmTara");
+	lblFilmTara.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblFilmTara.setBounds(10, 180, 70, 14);
+	contentPane.add(lblFilmTara);
+	
+	JTextField textField_5 = new JTextField();
+	textField_5.setBounds(105, 177, 86, 20);
+	contentPane.add(textField_5);
+	textField_5.setColumns(10);
+	
+	JLabel lblRegizorId = new JLabel("RegizorId");
+	lblRegizorId.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblRegizorId.setBounds(10, 214, 70, 14);
+	contentPane.add(lblRegizorId);
+	
+	JTextField textField_6 = new JTextField();
+	textField_6.setBounds(105, 211, 86, 20);
+	contentPane.add(textField_6);
+	textField_6.setColumns(10);
+	
+	JLabel lblDescriere = new JLabel("Descriere");
+	lblDescriere.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblDescriere.setBounds(10, 249, 70, 14);
+	contentPane.add(lblDescriere);
+	
+	JTextField textField_7 = new JTextField();
+	textField_7.setBounds(105, 246, 86, 20);
+	contentPane.add(textField_7);
+	textField_7.setColumns(10);
+	
+	JButton btnNewButton = new JButton("Save");
+	btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 11));
+	btnNewButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "INSERT INTO Film (film_id, film_titlu, film_an, film_durata, film_limba, film_tara, regizor_id, descriere) VALUES (?,?,?,?,?,?,?,?)";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				pst.setString(1,textField.getText());
+				pst.setString(2,textField_1.getText());
+				pst.setString(3,textField_2.getText());
+				pst.setString(4,textField_3.getText());
+				pst.setString(5,textField_4.getText());
+				pst.setString(6,textField_5.getText());
+				pst.setString(7,textField_6.getText());
+				pst.setString(8,textField_7.getText());
+				
+				pst.execute(); 
+				
+				JOptionPane.showMessageDialog(null, "Data Saved");
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+	});
+	btnNewButton.setBounds(219, 52, 108, 23);
+	contentPane.add(btnNewButton);
+	
+	JButton btnNewButton_1 = new JButton("Update");
+	btnNewButton_1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "UPDATE Film SET film_id = '"+textField.getText()+"', film_titlu = '"+textField_1.getText()+"', film_an = '"+textField_2.getText()+"', film_durata = '"+textField_3.getText()+"', film_limba = '"+textField_4.getText()+"', film_tara = '"+textField_5.getText()+"', regizor_id = '"+textField_6.getText()+"', descriere = '"+textField_7.getText()+"' WHERE film_id = '"+textField.getText()+"' ";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				
+				pst.execute(); 
+				
+				JOptionPane.showMessageDialog(null, "Data Updated");
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+		}
+	});
+	btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+	btnNewButton_1.setBounds(377, 18, 108, 23);
+	contentPane.add(btnNewButton_1);
+	
+	JButton btnNewButton_2 = new JButton("Delete");
+	btnNewButton_2.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			int action = JOptionPane.showConfirmDialog(null, "Do you really want to delete?", "Delete", JOptionPane.YES_NO_OPTION);
+			if(action == 0) {
+			try {
+				String query = "DELETE FROM Film WHERE film_id = '"+textField.getText()+"' ";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				
+				pst.execute(); 
+				
+				JOptionPane.showMessageDialog(null, "Data Deleted");
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			}
+		}
+	});
+	btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 11));
+	btnNewButton_2.setBounds(377, 50, 108, 23);
+	contentPane.add(btnNewButton_2);
+	
+	JComboBox comboBoxName = new JComboBox();
+	comboBoxName.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "SELECT * FROM Film WHERE film_titlu = ?";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				pst.setString(1, (String)comboBoxName.getSelectedItem());
+				ResultSet rs = pst.executeQuery();
+				
+				while(rs.next()) {
+					textField.setText(rs.getString("film_id"));
+					textField_1.setText(rs.getString("film_titlu"));
+					textField_2.setText(rs.getString("film_an"));
+					textField_3.setText(rs.getString("film_durata"));
+					textField_4.setText(rs.getString("film_limba"));
+					textField_5.setText(rs.getString("film_tara"));
+					textField_6.setText(rs.getString("regizor_id"));
+					textField_7.setText(rs.getString("descriere"));
+				}
+				
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+		}
+	});
+}
+	
+
+
+public void  ModifActor() {
+	conexiune = Connect.conexiuneBD();
+	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	setBounds(100, 100, 531, 380);
+	contentPane = new JPanel();
+	contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+	setContentPane(contentPane);
+	contentPane.setLayout(null);
+	
+	JButton BtnLoad = new JButton("LoadActor");
+	BtnLoad.setFont(new Font("Tahoma", Font.BOLD, 11));
+	BtnLoad.addActionListener(new ActionListener() {
+		private JTable table;
+
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "SELECT * FROM Actor";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				ResultSet rs = pst.executeQuery(); 
+				table.setModel(DbUtils.resultSetToTableModel(rs));
+				pst.close();
+				rs.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+	});
+	BtnLoad.setBounds(240, 31, 108, 23);
+	contentPane.add(BtnLoad);
+	
+	JScrollPane scrollPane = new JScrollPane();
+	scrollPane.setBounds(201, 84, 304, 247);
+	contentPane.add(scrollPane);
+	
+	JTable table = new JTable();
+	scrollPane.setViewportView(table);
+	
+	JLabel lblNewLabel = new JLabel("ActorID");
+	lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblNewLabel.setBounds(10, 103, 46, 14);
+	contentPane.add(lblNewLabel);
+	
+	textField = new JTextField();
+	textField.setBounds(105, 100, 86, 20);
+	contentPane.add(textField);
+	textField.setColumns(10);
+	
+	JLabel lblActornume = new JLabel("ActorNume");
+	lblActornume.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblActornume.setBounds(10, 136, 70, 14);
+	contentPane.add(lblActornume);
+	
+	JTextField textField_1 = new JTextField();
+	textField_1.setBounds(105, 133, 86, 20);
+	contentPane.add(textField_1);
+	textField_1.setColumns(10);
+	
+	JLabel lblActorprenume = new JLabel("ActorPrenume");
+	lblActorprenume.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblActorprenume.setBounds(9, 172, 86, 14);
+	contentPane.add(lblActorprenume);
+	
+	JTextField textField_2 = new JTextField();
+	textField_2.setBounds(105, 169, 86, 20);
+	contentPane.add(textField_2);
+	textField_2.setColumns(10);
+	
+	JLabel lblActorsex = new JLabel("ActorSex");
+	lblActorsex.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblActorsex.setBounds(10, 209, 59, 14);
+	contentPane.add(lblActorsex);
+	
+	JTextField textField_3 = new JTextField();
+	textField_3.setBounds(105, 206, 86, 20);
+	contentPane.add(textField_3);
+	textField_3.setColumns(10);
+	
+	JButton btnNewButton = new JButton("Save");
+	btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 11));
+	btnNewButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "INSERT INTO Actor (actor_id, actor_nume, actor_prenume, actor_sex) VALUES (?,?,?,?)";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				pst.setString(1,textField.getText());
+				pst.setString(2,textField_1.getText());
+				pst.setString(3,textField_2.getText());
+				pst.setString(4,textField_3.getText());
+				
+				pst.execute(); 
+				
+				JOptionPane.showMessageDialog(null, "Data Saved");
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	});
+	btnNewButton.setBounds(47, 237, 89, 23);
+	contentPane.add(btnNewButton);
+	
+	JButton btnUpdate = new JButton("Update");
+	btnUpdate.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "UPDATE Actor SET actor_id = '"+textField.getText()+"', actor_nume = '"+textField_1.getText()+"', actor_prenume ='"+textField_2.getText()+"', actor_sex = '"+textField_3.getText()+"' WHERE actor_id = '"+textField.getText()+"' ";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+			
+				pst.execute(); 
+				
+				JOptionPane.showMessageDialog(null, "Data Updated");
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	});
+	
+	btnUpdate.setFont(new Font("Tahoma", Font.BOLD, 11));
+	btnUpdate.setBounds(47, 271, 89, 23);
+	contentPane.add(btnUpdate);
+	
+	JButton btnNewButton_1 = new JButton("Delete");
+	btnNewButton_1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			int action = JOptionPane.showConfirmDialog(null, "Do you really want to delete?", "Delete", JOptionPane.YES_NO_OPTION);
+			if(action == 0) {
+			try {
+				String query = "DELETE FROM Actor WHERE actor_id ='"+textField.getText()+"' ";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+			
+				pst.execute(); 
+				
+				JOptionPane.showMessageDialog(null, "Data Deleted");
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			}
+		}
+	});
+	btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+	btnNewButton_1.setBounds(47, 308, 89, 23);
+	contentPane.add(btnNewButton_1);
+	
+	JComboBox comboBoxName = new JComboBox();
+	comboBoxName.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "SELECT * FROM Actor WHERE actor_nume = ?";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				pst.setString(1, (String)comboBoxName.getSelectedItem());
+				ResultSet rs = pst.executeQuery();
+				
+				while(rs.next()) {
+					textField.setText(rs.getString("actor_id"));
+					textField_1.setText(rs.getString("actor_nume"));
+					textField_2.setText(rs.getString("actor_prenume"));
+					textField_3.setText(rs.getString("actor_sex"));
+				}
+				
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	});
+}
+
+public void ModifReview() {
+	conexiune = Connect.conexiuneBD();
+	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	setBounds(100, 100, 531, 380);
+	contentPane = new JPanel();
+	contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+	setContentPane(contentPane);
+	contentPane.setLayout(null);
+	
+	JButton BtnLoad = new JButton("LoadReview");
+	BtnLoad.setFont(new Font("Tahoma", Font.BOLD, 11));
+	BtnLoad.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "SELECT * FROM Review";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				ResultSet rs = pst.executeQuery(); 
+				AbstractButton table = null;
+				table.setModel((ButtonModel) DbUtils.resultSetToTableModel(rs));
+				pst.close();
+				rs.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+	});
+	BtnLoad.setBounds(229, 11, 108, 23);
+	contentPane.add(BtnLoad);
+	
+	JScrollPane scrollPane = new JScrollPane();
+	scrollPane.setBounds(201, 84, 304, 247);
+	contentPane.add(scrollPane);
+	
+	JTable table = new JTable();
+	scrollPane.setViewportView(table);
+	
+	JLabel lblNewLabel = new JLabel("ReviewID");
+	lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblNewLabel.setBounds(10, 20, 70, 14);
+	contentPane.add(lblNewLabel);
+	
+	textField = new JTextField();
+	textField.setBounds(105, 17, 86, 20);
+	contentPane.add(textField);
+	textField.setColumns(10);
+	
+	JLabel lblFilmId = new JLabel("FilmID");
+	lblFilmId.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblFilmId.setBounds(10, 57, 70, 14);
+	contentPane.add(lblFilmId);
+	
+	JTextField textField_1 = new JTextField();
+	textField_1.setBounds(105, 54, 86, 20);
+	contentPane.add(textField_1);
+	textField_1.setColumns(10);
+	
+	JLabel lblComentariu = new JLabel("Comentariu");
+	lblComentariu.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblComentariu.setBounds(10, 94, 86, 14);
+	contentPane.add(lblComentariu);
+	
+	JTextField textField_2 = new JTextField();
+	textField_2.setBounds(105, 91, 86, 20);
+	contentPane.add(textField_2);
+	textField_2.setColumns(10);
+	
+	JLabel lblUserid = new JLabel("UserID");
+	lblUserid.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblUserid.setBounds(10, 137, 59, 14);
+	contentPane.add(lblUserid);
+	
+	JTextField textField_3 = new JTextField();
+	textField_3.setBounds(105, 134, 86, 20);
+	contentPane.add(textField_3);
+	textField_3.setColumns(10);
+	
+	JLabel lblNewLabel_1 = new JLabel("ReviewNota");
+	lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblNewLabel_1.setBounds(10, 179, 70, 14);
+	contentPane.add(lblNewLabel_1);
+	
+	JTextField textField_4 = new JTextField();
+	textField_4.setBounds(105, 176, 86, 20);
+	contentPane.add(textField_4);
+	textField_4.setColumns(10);
+	
+	JLabel lblOracomentariu = new JLabel("OraComentariu");
+	lblOracomentariu.setFont(new Font("Tahoma", Font.BOLD, 11));
+	lblOracomentariu.setBounds(10, 221, 97, 14);
+	contentPane.add(lblOracomentariu);
+	
+	JTextField textField_5 = new JTextField();
+	textField_5.setBounds(105, 218, 86, 20);
+	contentPane.add(textField_5);
+	textField_5.setColumns(10);
+	
+	JButton btnNewButton = new JButton("Save");
+	btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 11));
+	btnNewButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "INSERT INTO Review (review_id, film_id, comentariu, user_id, review_nota, ora_comentariu) VALUES (?,?,?,?,?,?)";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				pst.setString(1,textField.getText());
+				pst.setString(2,textField_1.getText());
+				pst.setString(3,textField_2.getText());
+				pst.setString(4,textField_3.getText());
+				pst.setString(5,textField_4.getText());
+				pst.setString(6,textField_5.getText());
+				
+				pst.execute(); 
+				
+				JOptionPane.showMessageDialog(null, "Data Saved");
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+	});
+	btnNewButton.setBounds(229, 45, 108, 23);
+	contentPane.add(btnNewButton);
+	
+	JButton btnNewButton_1 = new JButton("Update");
+	btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+	btnNewButton_1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "UPDATE Review SET review_id = '"+textField.getText()+"', film_id = '"+textField_1.getText()+"', comentariu = '"+textField_2.getText()+"', user_id = '"+textField_3.getText()+"', review_nota = '"+textField_4.getText()+"', ora_comentariu = '"+textField_5.getText()+"' WHERE review_id = '"+textField.getText()+"' ";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				
+				pst.execute(); 
+				
+				JOptionPane.showMessageDialog(null, "Data Updated");
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+	});
+	btnNewButton_1.setBounds(358, 11, 108, 23);
+	contentPane.add(btnNewButton_1);
+	
+	JButton btnNewButton_2 = new JButton("Delete");
+	btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 11));
+	btnNewButton_2.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			int action = JOptionPane.showConfirmDialog(null, "Do you really want to delete?", "Delete", JOptionPane.YES_NO_OPTION);
+			if(action == 0) {
+			try {
+				String query = "DELETE FROM Review WHERE review_id = '"+textField.getText()+"' ";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				
+				pst.execute(); 
+				
+				JOptionPane.showMessageDialog(null, "Data Deleted");
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	
+			}
+		}
+	});
+	btnNewButton_2.setBounds(358, 41, 108, 23);
+	contentPane.add(btnNewButton_2);
+	
+	JComboBox comboBoxName = new JComboBox();
+	comboBoxName.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				String query = "SELECT * FROM Review WHERE review_id = ?";
+				PreparedStatement pst = conexiune.prepareStatement(query);
+				pst.setString(1, (String)comboBoxName.getSelectedItem());
+				ResultSet rs = pst.executeQuery();
+				
+				while(rs.next()) {
+					textField.setText(rs.getString("review_id"));
+					textField_1.setText(rs.getString("film_id"));
+					textField_2.setText(rs.getString("comentariu"));
+					textField_3.setText(rs.getString("user_id"));
+					textField_4.setText(rs.getString("review_nota"));
+					textField_5.setText(rs.getString("ora_comentariu"));
+				}
+				
+				pst.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	});
+	comboBoxName.setFont(new Font("Tahoma", Font.BOLD, 18));
+	comboBoxName.setBounds(10, 255, 181, 76);
+	contentPane.add(comboBoxName);
+
+}
+}
+
+
